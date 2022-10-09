@@ -19,7 +19,7 @@
  
 .overlay {
   height: 100%;
-  width: 0%;
+  width: 100%;
   position: fixed;
   z-index: 1;
   top: 0;
@@ -122,9 +122,14 @@
     </form>
   </div>
     <div id="myNav" class="overlay">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <div class="overlay-content">
+  <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+  <div class="overlay-content" id="android" style="display: none;">
+    <p>Install this app and get rid of using browser everytime.</p>
     <button id="installApp">Install App</button>
+  </div>
+  <div class="overlay-content" id="ios" style="display:none;">
+    <p>Install this app on your phone by doing Add to Home Screen.</p>
+    <!-- <button id="installApp">Install App</button> -->
   </div>
 </div>
 
@@ -139,7 +144,9 @@
 
 const installApp = document.getElementById('installApp');
 
-const overlay = document.getElementById('myNav');
+const android = document.getElementById('android');
+const ios = document.getElementById('ios');
+
 installApp.addEventListener('click', async () => {
     if (deferredPrompt !== null) {
         deferredPrompt.prompt();
@@ -153,9 +160,19 @@ installApp.addEventListener('click', async () => {
 let deferredPrompt;
 
 window.addEventListener('beforeinstallprompt', (e) => {
-    overlay.style.width='100%';
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    if (/android/i.test(userAgent)) {
+        android.style.display='block';
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        ios.style.display='block';
+    }
     deferredPrompt = e;
 });
+console.log(navigator.appVersion);
   </script>
   <!-- <script src="js/db.js"></script> -->
   <script src="js/ui.js"></script>
